@@ -78,37 +78,102 @@
 - 학습 자료 추천
 ```
 
-## 🚀 Phase 1 구현 계획
+## 🤖 분석 및 평가 전략
 
-### 시작점: GitHub 릴리즈 모니터링
-**이유**:
-- 구현 단순함 (GitHub API 잘 정리됨)
-- 정확성 100% (공식 소스)
-- 중요도 높음 (메이저 라이브러리들)
+### 하이브리드 아키텍처 (비용 최적화)
 
-### 기술 스택
-- Node.js + TypeScript
-- GitHub API
-- 간단한 이메일 발송 (Nodemailer)
+**클라우드 자동화 (GitHub Actions)**
+```
+📊 수집 단계
+├── GitHub API로 릴리즈 수집
+├── Reddit/HN 스크래핑  
+├── 원시 데이터 JSON으로 저장 (data/YYYY-MM-DD.json)
+└── 로컬에 알림 (새 데이터 있을 때)
+```
+
+**로컬 분석 (MCP + Claude)**
+```
+🤖 분석 & 큐레이션 단계
+├── MCP로 수집된 데이터 읽기
+├── Claude로 중요도 분석
+├── 한국어 요약 생성
+└── 수동 큐레이션 (사람이 최종 판단)
+```
+
+### AI 분석 프롬프트 전략
+**Claude API 활용**
+- 긴 릴리즈 노트 요약
+- 실무 영향도 분석
+- 한국어 설명 생성
+- 구조화된 JSON 응답
+
+**분석 기준**
+1. 실무 영향도 (1-10)
+2. 시급성 (1-10)  
+3. 트렌드 중요성 (1-10)
+4. 액션 필요 여부
+
+## 📧 전달 방식
+
+### React.email 활용 (실무 연습 겸)
+**이메일 템플릿 종류**
+- `urgent-alert.tsx`: 긴급 알림 (breaking changes 등)
+- `daily-digest.tsx`: 일일 요약 리포트
+- `weekly-summary.tsx`: 주간 트렌드 분석
+
+**발송 플로우**
+1. MCP에서 분석 완료 → 중요도 판단
+2. React.email로 렌더링 → HTML 생성  
+3. Nodemailer로 발송 → Gmail SMTP
+
+**템플릿 구조**
+```
+email-templates/
+├── templates/
+│   ├── daily-digest.tsx
+│   ├── urgent-alert.tsx
+│   └── weekly-summary.tsx
+├── components/
+│   ├── header.tsx
+│   ├── article-card.tsx
+│   └── footer.tsx
+└── send/
+    └── mailer.ts
+```
+
+## 🚀 구현 단계
+
+### Phase 1: 기본 수집 시스템
+- GitHub API 연동
+- 데이터 수집 & 저장
+- GitHub Actions 자동화
+
+### Phase 2: 분석 & 큐레이션  
+- MCP 연동 설정
+- Claude API 분석 로직
+- 로컬 큐레이션 워크플로우
+
+### Phase 3: 이메일 발송
+- React.email 셋업
+- 템플릿 개발
+- 발송 시스템 구축
+
+### Phase 4: 확장 & 개선
+- 추가 소스 연동 (Reddit, HN)
+- 개인화 기능
+- 피드백 루프 구축
 
 ---
 
-## 📝 다음 단계에서 정해야 할 것들
+## 🎯 개발 방향성
 
-1. **평가 및 분석 방법**
-   - AI 활용 방안
-   - 콘텐츠 요약/재작성 전략
+**학습 중심 개발**
+- 각 기술 스택을 배워가며 구현
+- 실무에 적용 가능한 패턴 학습
+- 단계별 리뷰 & 개선
 
-2. **전달 방식**
-   - 이메일 vs 웹 대시보드
-   - 전달 주기 (일간/주간)
-   - 콘텐츠 포맷
-
-3. **기술 구현 세부사항**
-   - 아키텍처 설계
-   - 데이터 저장 방식
-   - 자동화 (GitHub Actions)
-
-4. **성공 지표 및 개선 방안**
-   - 어떻게 품질을 측정할 것인가
-   - 피드백 루프 설계
+**실무 연습 요소들**
+- React.email: 이메일 템플릿 관리
+- MCP: Claude와의 효율적인 협업
+- GitHub Actions: CI/CD 자동화
+- API 설계: 확장 가능한 구조
